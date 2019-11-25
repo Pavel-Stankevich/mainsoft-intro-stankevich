@@ -2,7 +2,6 @@ package by.mainsoft.intro.stankevich.controller;
 
 import by.mainsoft.intro.stankevich.model.User;
 import by.mainsoft.intro.stankevich.security.JwtTokenProvider;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -12,15 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestClientException;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,10 +22,8 @@ class AuthControllerTest {
 
     @LocalServerPort
     private int port;
-
     @Autowired
     private TestRestTemplate restTemplate;
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -47,7 +39,7 @@ class AuthControllerTest {
     @Test
     @Order(1)
     void register() {
-        AuthController.ApiResponse response = restTemplate.postForObject(
+        final AuthController.ApiResponse response = restTemplate.postForObject(
                 "http://localhost:" + port + "/register", user, AuthController.ApiResponse.class);
         assertTrue(response.isSuccess());
     }
@@ -55,7 +47,7 @@ class AuthControllerTest {
     @Test
     @Order(2)
     void registerWithExistingUsername() {
-        AuthController.ApiResponse response = restTemplate.postForObject(
+        final AuthController.ApiResponse response = restTemplate.postForObject(
                 "http://localhost:" + port + "/register", user, AuthController.ApiResponse.class);
         assertFalse(response.isSuccess());
     }
@@ -63,9 +55,11 @@ class AuthControllerTest {
     @Test
     @Order(3)
     void login() {
-            AuthController.JwtAuthenticationResponse response = restTemplate.postForObject(
-                    "http://localhost:" + port + "/login", user, AuthController.JwtAuthenticationResponse.class);
-            assertTrue(jwtTokenProvider.validateToken(response.getAccessToken()));
+        final AuthController.JwtAuthenticationResponse response = restTemplate.postForObject(
+                "http://localhost:" + port + "/login", user, AuthController.JwtAuthenticationResponse.class);
+        final String accessToken = response.getAccessToken();
+        assertTrue(jwtTokenProvider.validateToken(accessToken));
+        assertEquals(user.getUsername(), jwtTokenProvider.getUsernameFromJWT(response.getAccessToken()));
     }
 
 }

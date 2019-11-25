@@ -6,7 +6,6 @@ import by.mainsoft.intro.stankevich.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +23,8 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class AuthController {
 
+    static final String USER_REGISTERED_SUCCESSFULLY = "User registered successfully";
+    static final String USERNAME_IS_ALREADY_TAKEN = "Username is already taken!";
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
@@ -31,25 +32,24 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody final User user) {
-        Authentication authentication = authenticationManager.authenticate(
+        final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
                         user.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtTokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwtTokenProvider.generateToken(authentication)));
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody final User user) {
         if (userService.isUsernameAlreadyExists(user.getUsername())) {
-            return new ResponseEntity<>(new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, USERNAME_IS_ALREADY_TAKEN), HttpStatus.BAD_REQUEST);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.save(user);
-        return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
+        return ResponseEntity.ok(new ApiResponse(true, USER_REGISTERED_SUCCESSFULLY));
     }
 
     @NoArgsConstructor

@@ -1,6 +1,5 @@
 package by.mainsoft.intro.stankevich.security;
 
-import by.mainsoft.intro.stankevich.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -13,11 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.util.Date;
 
-@Component
 @Log4j2
+@Component
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
@@ -29,12 +27,16 @@ public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
         UserDetails user = (UserDetails) authentication.getPrincipal();
+        return generateToken(user.getUsername());
+    }
+
+    public String generateToken(String username) {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(username)
                 .setIssuer(jwtIssuer)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
