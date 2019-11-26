@@ -1,6 +1,7 @@
 package by.mainsoft.intro.stankevich.controller;
 
 import by.mainsoft.intro.stankevich.model.Race;
+import by.mainsoft.intro.stankevich.model.RaceReport;
 import by.mainsoft.intro.stankevich.model.User;
 import by.mainsoft.intro.stankevich.security.JwtTokenProvider;
 import by.mainsoft.intro.stankevich.service.UserService;
@@ -118,16 +119,29 @@ class RaceControllerTest {
                 "http://localhost:" + port + "/races/",
                 HttpMethod.GET,
                 new HttpEntity<>(null, httpHeadersWithAuth),
-                new ParameterizedTypeReference<List<Race>>() {
-                });
+                new ParameterizedTypeReference<List<Race>>() {});
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
         final List<Race> racesFromResponse = response.getBody();
         assertEquals(races, racesFromResponse);
     }
 
+
     @Test
     @Order(3)
+    void weekReports() {
+        final ResponseEntity<List<RaceReport>> response = restTemplate.exchange(
+                "http://localhost:" + port + "/races/report",
+                HttpMethod.GET,
+                new HttpEntity<>(null, httpHeadersWithAuth),
+                new ParameterizedTypeReference<List<RaceReport>>() {});
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.hasBody());
+        assertEquals(2, response.getBody().size());
+    }
+
+    @Test
+    @Order(4)
     void userRace() {
         races.forEach(race -> {
             final ResponseEntity<Race> response = restTemplate.exchange(
@@ -143,7 +157,7 @@ class RaceControllerTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void updateRace() {
         races.forEach(race -> {
             race.setDistance(race.getDistance().add(BigDecimal.valueOf(0.1)));
@@ -168,7 +182,7 @@ class RaceControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void deleteRace() {
         races.forEach(race -> {
             final ResponseEntity<Void> responseForPutMethod = restTemplate.exchange(
