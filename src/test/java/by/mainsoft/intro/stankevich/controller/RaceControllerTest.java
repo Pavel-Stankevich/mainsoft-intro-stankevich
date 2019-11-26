@@ -23,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -121,13 +120,13 @@ class RaceControllerTest {
                 "http://localhost:" + port + "/races/",
                 HttpMethod.GET,
                 new HttpEntity<>(null, httpHeadersWithAuth),
-                new ParameterizedTypeReference<List<Race>>() {});
+                new ParameterizedTypeReference<List<Race>>() {
+                });
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
         final List<Race> racesFromResponse = response.getBody();
         assertEquals(races, racesFromResponse);
     }
-
 
     @Test
     @Order(3)
@@ -136,7 +135,8 @@ class RaceControllerTest {
                 "http://localhost:" + port + "/races/report",
                 HttpMethod.GET,
                 new HttpEntity<>(null, httpHeadersWithAuth),
-                new ParameterizedTypeReference<List<RaceReport>>() {});
+                new ParameterizedTypeReference<List<RaceReport>>() {
+                });
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
         assertEquals(2, response.getBody().size());
