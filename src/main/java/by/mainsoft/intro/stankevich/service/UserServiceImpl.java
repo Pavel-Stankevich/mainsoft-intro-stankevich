@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findUserByUsername(username);
+        final Optional<User> optionalUser = userRepository.findUserByUsername(username);
         if (optionalUser.isPresent()) {
             return userToUserDetailsConverter.convert(optionalUser.get());
         } else {
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User getUserByUsername(final String username) {
-        Optional<User> optionalUser = userRepository.findUserByUsername(username);
+        final Optional<User> optionalUser = userRepository.findUserByUsername(username);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void save(final User user) {
-        User user0 = userRepository.save(user);
+        final User user0 = userRepository.save(user);
         user.setId(user0.getId());
     }
 

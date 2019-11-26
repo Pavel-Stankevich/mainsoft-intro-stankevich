@@ -13,7 +13,14 @@ public interface RaceReportRepository extends JpaRepository<RaceReport, Integer>
             "    cast(extract('week' from start_time) AS int) AS week_number, " +
             "    cast(date_trunc('week', start_time) AS date) AS from_date, " +
             "    cast(date_trunc('week', start_time) + cast('6 days' AS interval) AS date) AS to_date, " +
-            "    cast(avg(distance / cast((((extract(HOUR FROM duration) * 60 * 60) + (extract(MINUTE FROM duration) * 60) + extract(SECOND FROM duration))) / (60 * 60) AS numeric)) AS numeric(18, 3)) avg_speed, " +
+            "    cast(avg(" +
+            "           distance /" +
+            "           cast((" +
+            "                   (extract(HOUR FROM duration) * 60 * 60) + " +
+            "                   (extract(MINUTE FROM duration) * 60) + " +
+            "                   extract(SECOND FROM duration)" +
+            "               ) / (60 * 60) AS numeric)" +
+            "           ) AS numeric(18, 3)) avg_speed, " +
             "    cast(avg(duration) AS time) AS avg_duration, " +
             "    cast(sum(distance) AS numeric(18, 3)) AS total_distance " +
             "FROM public.races " +

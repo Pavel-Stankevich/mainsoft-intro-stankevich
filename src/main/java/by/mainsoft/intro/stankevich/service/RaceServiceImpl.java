@@ -23,11 +23,7 @@ public class RaceServiceImpl implements RaceService {
     @Transactional
     @Override
     public void save(final User user, final Race race) {
-        final User user0 = new User();
-        user0.setId(user.getId());
-        user0.setUsername(user.getUsername());
-        user0.setPassword(user.getPassword());
-        race.setUser(user0);
+        race.setUser(new User(user.getId(), user.getUsername(), user.getPassword()));
         raceRepository.save(race);
     }
 

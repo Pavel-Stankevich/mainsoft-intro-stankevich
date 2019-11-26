@@ -23,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -47,34 +49,33 @@ class RaceControllerTest {
     private JwtTokenProvider jwtTokenProvider;
 
     private HttpHeaders httpHeadersWithAuth;
-    private User user;
     private static List<Race> races;
 
     @BeforeAll
     static void init() {
         races = Arrays.asList(
                 new Race(
-                        BigDecimal.valueOf(15.208).setScale(3),
+                        BigDecimal.valueOf(15.208).setScale(3, RoundingMode.UP),
                         LocalDateTime.of(2019, 11, 23, 12, 0, 5),
                         LocalTime.of(1, 0, 1)),
                 new Race(
-                        BigDecimal.valueOf(1.5).setScale(3),
+                        BigDecimal.valueOf(1.5).setScale(3, RoundingMode.UP),
                         LocalDateTime.of(2019, 11, 24, 13, 34, 59),
                         LocalTime.of(0, 4, 23)),
                 new Race(
-                        BigDecimal.valueOf(5.583).setScale(3),
+                        BigDecimal.valueOf(5.583).setScale(3, RoundingMode.UP),
                         LocalDateTime.of(2019, 11, 24, 15, 0, 2),
                         LocalTime.of(0, 19, 58)),
                 new Race(
-                        BigDecimal.valueOf(6.5).setScale(3),
+                        BigDecimal.valueOf(6.5).setScale(3, RoundingMode.UP),
                         LocalDateTime.of(2019, 11, 24, 13, 34, 59),
                         LocalTime.of(0, 4, 27)),
                 new Race(
-                        BigDecimal.valueOf(16.119).setScale(3),
+                        BigDecimal.valueOf(16.119).setScale(3, RoundingMode.UP),
                         LocalDateTime.of(2019, 11, 25, 6, 24, 54),
                         LocalTime.of(1, 0, 23)),
                 new Race(
-                        BigDecimal.valueOf(5.205).setScale(3),
+                        BigDecimal.valueOf(5.205).setScale(3, RoundingMode.UP),
                         LocalDateTime.of(2019, 11, 25, 19, 48, 37),
                         LocalTime.of(0, 20, 0))
         );
@@ -83,6 +84,7 @@ class RaceControllerTest {
     @BeforeEach
     void initBeforeTest() {
         final String username = "testUserRace";
+        final User user;
         if (userService.isUsernameAlreadyExists(username)) {
             user = userService.getUserByUsername(username);
         } else {

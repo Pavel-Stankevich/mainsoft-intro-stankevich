@@ -23,15 +23,15 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class AuthController {
 
-    static final String USER_REGISTERED_SUCCESSFULLY = "User registered successfully";
-    static final String USERNAME_IS_ALREADY_TAKEN = "Username is already taken!";
+    private static final String USER_REGISTERED_SUCCESSFULLY = "User registered successfully";
+    private static final String USERNAME_IS_ALREADY_TAKEN = "Username is already taken!";
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody final User user) {
+    public ResponseEntity<?> login(final @Valid @RequestBody User user) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
@@ -43,7 +43,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody final User user) {
+    public ResponseEntity<?> register(final @Valid @RequestBody User user) {
         if (userService.isUsernameAlreadyExists(user.getUsername())) {
             return new ResponseEntity<>(new ApiResponse(false, USERNAME_IS_ALREADY_TAKEN), HttpStatus.BAD_REQUEST);
         }
@@ -58,7 +58,7 @@ public class AuthController {
         private String accessToken;
         private String tokenType;
 
-        public JwtAuthenticationResponse(final String accessToken) {
+        JwtAuthenticationResponse(final String accessToken) {
             this.accessToken = accessToken;
             this.tokenType = "Bearer";
         }

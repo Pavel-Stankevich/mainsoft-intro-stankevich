@@ -4,43 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.ColumnResult;
-import javax.persistence.ConstructorResult;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityResult;
-import javax.persistence.FieldResult;
 import javax.persistence.Id;
-import javax.persistence.SqlResultSetMapping;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@SqlResultSetMapping(
-        name = "raceReportResultSerMapping",
-        entities = {
-                @EntityResult(entityClass = RaceReport.class, fields = {
-                        @FieldResult(name = "weekNumber", column = "week_number"),
-                        @FieldResult(name = "fromDate", column = "from_date"),
-                        @FieldResult(name = "toDate", column = "to_date"),
-                        @FieldResult(name = "avgSpeed", column = "avg_speed"),
-                        @FieldResult(name = "avgDuration", column = "avg_duration"),
-                        @FieldResult(name = "totalDistance", column = "total_distance")
-                })
-        },
-        classes = {
-                @ConstructorResult(
-                        targetClass = RaceReport.class,
-                        columns = {
-                                @ColumnResult(name = "week_number", type = Integer.class),
-                                @ColumnResult(name = "from_date", type = LocalDate.class),
-                                @ColumnResult(name = "to_date", type = LocalDate.class),
-                                @ColumnResult(name = "avg_speed", type = BigDecimal.class),
-                                @ColumnResult(name = "avg_duration", type = LocalTime.class),
-                                @ColumnResult(name = "total_distance", type = BigDecimal.class)
-                        }
-                )
-        }
-)
 @Entity
 @Data
 @AllArgsConstructor
@@ -48,10 +18,16 @@ import java.time.LocalTime;
 public class RaceReport {
 
     @Id
+    @Column(name = "week_number")
     private Integer weekNumber;
+    @Column(name = "from_date")
     private LocalDate fromDate;
+    @Column(name = "to_date")
     private LocalDate toDate;
+    @Column(name = "avg_speed")
     private BigDecimal avgSpeed;
+    @Column(name = "avg_duration")
     private LocalTime avgDuration;
+    @Column(name = "total_distance")
     private BigDecimal totalDistance;
 }
